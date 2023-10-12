@@ -1,11 +1,10 @@
 import express from 'express';
 
-
 const routes = express.Router();
 
-routes.get('/health' , (req, res) =>{
-  res.send('OK');  
-})
+routes.get('/health', (req, res) => {
+  res.send('OK');
+});
 
 // const moduleRoutes = [
 
