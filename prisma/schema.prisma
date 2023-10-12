@@ -13,19 +13,36 @@ datasource db {
 // schema.prisma
 
 model User {
-  id        String    @default(uuid()) @id
-  name      String
-  email     String    @unique
+  id String @id @default(uuid())
+  email     String   @unique
+  firstName String
+  lastName  String
   password  String
-  role      UserRole   // Use an enum to represent the role
-  contactNo String
-  address   String
-  profileImg String?
-// Add this line to define the opposite relation
+  role      UserRole @default(user)
+  contactNo  String
+  Profile   Profile?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
 }
 
-enum UserRole {
+ enum UserRole {
+  super_admin
   admin
-  customer
+  user
 }
 
+model Profile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  address    String?
+  profileImg String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_profile")
+}
