@@ -3,23 +3,21 @@ import { UserRole } from '../../../../utils/shared/enum';
 
 //% Create User validation
 const createUserZodSchema = z.object({
-  body: z.object({
-    firstName: z.string({
-      required_error: 'Name is required',
-    }),
-    lastName: z.string({
-      required_error: 'Name is required',
-    }),
-    email: z.string({
-      required_error: 'email is required',
-    }),
-    password: z.string({
-      required_error: 'password is required',
-    }),
-    role: z.nativeEnum(UserRole).optional(),
-    contactNo: z.string({
-      required_error: 'contactNo is required',
-    }),
+  firstName: z.string({
+    required_error: 'Name is required',
+  }),
+  lastName: z.string({
+    required_error: 'Name is required',
+  }),
+  email: z.string({
+    required_error: 'email is required',
+  }),
+  password: z.string({
+    required_error: 'password is required',
+  }),
+  role: z.nativeEnum(UserRole).optional(),
+  contactNo: z.string({
+    required_error: 'contactNo is required',
   }),
 });
 //% Login user validation
