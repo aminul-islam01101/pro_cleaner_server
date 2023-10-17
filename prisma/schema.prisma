@@ -13,19 +13,19 @@ datasource db {
 // schema.prisma
 
 model User {
-  id              String            @id @default(uuid())
-  email           String            @unique
-  firstName       String
-  lastName        String
-  password        String
-  role            UserRole          @default(user)
+  id               String            @id @default(uuid())
+  email            String            @unique
+  firstName        String
+  lastName         String
+  password         String
+  role             UserRole          @default(user)
   adminPermissions AdminPermission[] @default([])
-  Profile         Profile?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  Review          Review[]
-  Booking         Booking[]
-  Feedback        Feedback[]
+  Profile          Profile?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  Review           Review[]
+  Booking          Booking[]
+  Feedback         Feedback[]
 
   @@map("users")
 }
@@ -49,6 +49,7 @@ model Service {
   id           String             @id @default(uuid())
   name         String
   description  String
+  image        String
   price        Float
   availability availabilityStatus
   createdAt    DateTime           @default(now())
@@ -106,7 +107,7 @@ model Booking {
 
 model Category {
   id        String   @id @default(uuid())
-  name      String
+  title      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
