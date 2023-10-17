@@ -1,32 +1,24 @@
 import express from 'express';
 
+import zodValidator from '../../../utils/middlewares/zodValidator';
+import { UserRole } from '../../../utils/shared/enum';
+
+import roleVerifier from '../../../utils/middlewares/roleVerifier';
+import { serviceControllers } from './service.controllers';
+import { serviceValidations } from './service.validations';
+
 const router = express.Router();
+const { ADMIN, SUPER_ADMIN } = UserRole;
 
-// router.post(
-//   '/signup',
-//   zodValidator(emailAuthValidations.createUserZodSchema),
-//   emailAuthControllers.createUser
-// );
-// router.post(
-//   '/signin',
-//   zodValidator(emailAuthValidations.loginUserZodSchema),
-//   emailAuthControllers.loginUser
-// );
+router.post('/', roleVerifier(ADMIN), serviceControllers.createService);
+router.get('/', serviceControllers.getServices);
+// router.get('/', roleVerifier(ADMIN), serviceControllers.getservices);
 
-// .patch(productController.updateProductById)
+// router.use('/:id', roleVerifier(ADMIN));
+router
+  .route('/:id')
+  .get(serviceControllers.getService)
+  .patch(zodValidator(serviceValidations.updateServiceZodSchema), serviceControllers.updateService)
+  .delete(serviceControllers.deleteService);
 
-//% formate
-// router.route('/create-user',).post(
-
-//   zodValidator(UserValidation.createUserZodSchema),
-//   UserControllers.createUser
-// router.route('/bulk-update').patch(productController.bulkUpdateProduct);
-// router.route('/bulk-delete').delete(productController.bulkDeleteProduct);
-
-// router.route('/').get(productController.getProducts).post(productController.createProduct);
-
-// router
-//   .route('/:id')
-//   .patch(productController.updateProductById)
-//   .delete(productController.deleteProductById);
-export const userRoutes = router;
+export const serviceRoutes = router;

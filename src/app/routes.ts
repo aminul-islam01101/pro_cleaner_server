@@ -2,6 +2,8 @@ import express from 'express';
 import { emailAuthRoutes } from './modules/auths/emailAuth/emailAuth.routes';
 import { userRoutes } from './modules/users/user.routes';
 import { categoryRoutes } from './modules/categories/category.routes';
+import { serviceRoutes } from './modules/services/service.routes';
+import { slotRoutes } from './modules/slots/slot.routes';
 
 const routes = express.Router();
 
@@ -21,6 +23,14 @@ const moduleRoutes = [
   {
     path: '/categories',
     route: categoryRoutes,
+  },
+  {
+    path: '/services',
+    route: serviceRoutes,
+  },
+  {
+    path: '/slots',
+    route: slotRoutes,
   },
 ];
 
