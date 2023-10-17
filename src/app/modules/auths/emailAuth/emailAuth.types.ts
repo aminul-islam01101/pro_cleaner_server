@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 
 export type TEmailLogin = {
   email: string;
@@ -13,4 +13,7 @@ export type TLoginUserResponse = TAccessToken & {
   role: UserRole;
   userId: string;
   refreshToken?: string;
+};
+export type TSignupInputs = User & {
+  contactNo: string;
 };

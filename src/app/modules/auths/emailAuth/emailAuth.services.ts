@@ -7,11 +7,11 @@ import { configs } from '../../../../utils/configs/env.configs';
 import { HandleApiError } from '../../../../utils/shared/errors/handleApiError';
 import { jwtHelpers } from '../../../../utils/shared/helpers/jwtHelpers';
 import prisma from '../../../../utils/shared/helpers/prisma';
-import { TEmailLogin, TLoginUserResponse } from './emailAuth.types';
+import { TEmailLogin, TLoginUserResponse, TSignupInputs } from './emailAuth.types';
 
 /* eslint-disable no-param-reassign */
 
-const isUserExists = async (email: string) => {
+export const isUserExists = async (email: string) => {
   const user = await prisma.user.findUnique({
     where: {
       email,
@@ -21,21 +21,40 @@ const isUserExists = async (email: string) => {
 };
 
 //# Create User
-const createUser = async (user: User): Promise<User | null> => {
+const createUser = async (user: TSignupInputs): Promise<User | null> => {
   const isUserExist = await isUserExists(user.email);
   if (isUserExist) {
     throw new HandleApiError(httpStatus.CONFLICT, 'User already exist!');
   }
-  const hashedPassword = await bcrypt.hash(user.password, 10);
+  const { contactNo, ...userData } = user;
+  let createdUser = null;
+  return prisma.$transaction(async (transactionClient) => {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
-  const createdUser = await prisma.user.create({
-    data: {
-      ...user,
-      password: hashedPassword, // Replace the plain password with the hashed password
-    },
+    createdUser = await transactionClient.user.create({
+      data: {
+        ...userData,
+        password: hashedPassword,
+      },
+    });
+
+    if (!createdUser) {
+      throw new HandleApiError(httpStatus.BAD_REQUEST, 'Unable to create user');
+    }
+
+    const createdProfile = await transactionClient.profile.create({
+      data: {
+        userId: createdUser.id,
+        contactNo,
+      },
+    });
+
+    if (!createdProfile) {
+      throw new HandleApiError(httpStatus.BAD_REQUEST, 'Unable to create user profile');
+    }
+
+    return createdUser;
   });
-
-  return createdUser;
 };
 
 //#  login user

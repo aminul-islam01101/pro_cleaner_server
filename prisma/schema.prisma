@@ -13,36 +13,161 @@ datasource db {
 // schema.prisma
 
 model User {
-  id String @id @default(uuid())
-  email     String   @unique
-  firstName String
-  lastName  String
-  password  String
-  role      UserRole @default(user)
-  contactNo  String
-  Profile   Profile?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String            @id @default(uuid())
+  email           String            @unique
+  firstName       String
+  lastName        String
+  password        String
+  role            UserRole          @default(user)
+  adminPermissions AdminPermission[] @default([])
+  Profile         Profile?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  Review          Review[]
+  Booking         Booking[]
+  Feedback        Feedback[]
 
   @@map("users")
-}
-
- enum UserRole {
-  super_admin
-  admin
-  user
 }
 
 model Profile {
   id         String   @id @default(uuid())
   userId     String   @unique
+  contactNo  String
   address    String?
   profileImg String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   // Relationships
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_profile")
+}
+
+model Service {
+  id           String             @id @default(uuid())
+  name         String
+  description  String
+  price        Float
+  availability availabilityStatus
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  reviews      Review[]
+  bookings     Booking[]
+  category     Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId   String
+  feedbacks    Feedback[]
+
+  @@map("services")
+}
+
+model Slot {
+  id        String    @id @default(uuid())
+  startTime String
+  endTime   String
+  // ... other fields related to the slot
+  Booking   Booking[]
+
+  @@map("slots")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  serviceId String
+  rating    Float
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model Booking {
+  id        String        @id @default(uuid())
+  userId    String
+  serviceId String
+  status    BookingStatus
+  date      DateTime
+  slotId    String
+  slot      Slot          @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  services Service[]
+
+  @@map("categories")
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  userId    String
+  serviceId String
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("feedbacks")
+}
+
+model BlogPost {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  author    String // You can use this to associate the author's name or ID
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  super_admin
+  admin
+  user
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+}
+
+enum availabilityStatus {
+  available
+  unavailable
+  comming_soon
+}
+
+enum AdminPermission {
+  all
+  content_manager
+  user_manager
+  service_manager
 }

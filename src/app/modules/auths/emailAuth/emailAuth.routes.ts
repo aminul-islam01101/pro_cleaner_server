@@ -2,15 +2,22 @@ import express from 'express';
 
 import zodValidator from '../../../../utils/middlewares/zodValidator';
 
+import roleVerifier from '../../../../utils/middlewares/roleVerifier';
+import { UserRole } from '../../../../utils/shared/enum';
 import { emailAuthControllers } from './emailAuth.controllers';
 import { emailAuthValidations } from './emailAuth.validations';
-import { UserRole } from '../../../../utils/shared/enum';
 
 const router = express.Router();
-const { ADMIN } = UserRole;
+const { ADMIN, SUPER_ADMIN } = UserRole;
 
 router.post(
   '/signup',
+  zodValidator(emailAuthValidations.createUserZodSchema),
+  emailAuthControllers.createUser
+);
+router.post(
+  '/signup/admin',
+  roleVerifier(SUPER_ADMIN),
   zodValidator(emailAuthValidations.createUserZodSchema),
   emailAuthControllers.createUser
 );

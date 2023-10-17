@@ -8,11 +8,11 @@ import sendResponse from '../../../../utils/shared/helpers/sendResponse';
 
 import { cookieOptions } from '../../../../utils/shared/helpers/cookieOptions';
 import { emailAuthServices } from './emailAuth.services';
-import { TEmailLogin, TLoginUserResponse } from './emailAuth.types';
+import { TEmailLogin, TLoginUserResponse, TSignupInputs } from './emailAuth.types';
 
 //& Create User
 const createUser: RequestHandler = catchAsync(async (req: Request, res: Response) => {
-  const user = req.body as User;
+  const user = req.body as TSignupInputs;
 
   const result = await emailAuthServices.createUser(user);
 
