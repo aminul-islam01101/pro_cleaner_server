@@ -10,7 +10,12 @@ import { serviceValidations } from './service.validations';
 const router = express.Router();
 const { ADMIN, SUPER_ADMIN } = UserRole;
 
-router.post('/', roleVerifier(ADMIN), serviceControllers.createService);
+router.post(
+  '/',
+  roleVerifier(ADMIN),
+  zodValidator(serviceValidations.createServiceZodSchema),
+  serviceControllers.createService
+);
 router.get('/', serviceControllers.getServices);
 // router.get('/', roleVerifier(ADMIN), serviceControllers.getservices);
 

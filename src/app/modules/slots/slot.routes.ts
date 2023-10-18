@@ -10,7 +10,12 @@ import { slotValidations } from './slot.validations';
 const router = express.Router();
 const { ADMIN, SUPER_ADMIN } = UserRole;
 
-router.post('/', roleVerifier(ADMIN), slotControllers.createSlot);
+router.post(
+  '/',
+  roleVerifier(ADMIN),
+  zodValidator(slotValidations.createUpdateCategoryZodSchema),
+  slotControllers.createSlot
+);
 router.get('/', slotControllers.getSlots);
 // router.get('/', roleVerifier(ADMIN),slotControllers.getSlots);
 

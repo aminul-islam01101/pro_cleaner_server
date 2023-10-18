@@ -27,11 +27,11 @@ const createUser = async (user: TSignupInputs): Promise<User | null> => {
     throw new HandleApiError(httpStatus.CONFLICT, 'User already exist!');
   }
   const { contactNo, ...userData } = user;
-  let createdUser = null;
+
   return prisma.$transaction(async (transactionClient) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    createdUser = await transactionClient.user.create({
+    const createdUser = await transactionClient.user.create({
       data: {
         ...userData,
         password: hashedPassword,

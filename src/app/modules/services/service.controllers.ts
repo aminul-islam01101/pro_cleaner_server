@@ -7,7 +7,7 @@ import catchAsync from '../../../utils/shared/helpers/catchAsync';
 import sendResponse from '../../../utils/shared/helpers/sendResponse';
 import { serviceServices } from './service.services';
 
-//& GetUsers
+//& create service
 const createService: RequestHandler = catchAsync(async (req: Request, res: Response) => {
   const result = await serviceServices.createService(req.body as Service);
 

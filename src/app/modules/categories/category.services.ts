@@ -43,7 +43,11 @@ const updateCategory = async (id: string, category: Category): Promise<Category 
 };
 //# get all category
 const getCategories = async (): Promise<Category[] | null> => {
-  const categories = await prisma.category.findMany({});
+  const categories = await prisma.category.findMany({
+    include: {
+      services: true,
+    },
+  });
 
   return categories;
 };
@@ -51,6 +55,9 @@ const getCategories = async (): Promise<Category[] | null> => {
 const getCategory = async (id: string): Promise<Category | null> => {
   const category = await prisma.category.findUnique({
     where: { id },
+    include: {
+      services: true,
+    },
   });
 
   return category;

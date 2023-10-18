@@ -77,7 +77,7 @@ model Review {
   id        String   @id @default(uuid())
   userId    String
   serviceId String
-  rating    Float
+  rating   Decimal    @db.Decimal(5, 1) 
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -30,11 +30,11 @@ const createService = async (service: Service): Promise<Service | null> => {
   if (existingService) {
     throw new HandleApiError(httpStatus.CONFLICT, 'service already exists !');
   }
-  const createdUser = await prisma.service.create({
+  const createdService = await prisma.service.create({
     data: service,
   });
 
-  return createdUser;
+  return createdService;
 };
 //# update Service
 const updateService = async (id: string, payload: Partial<Service>): Promise<Service | null> => {
@@ -54,7 +54,11 @@ const updateService = async (id: string, payload: Partial<Service>): Promise<Ser
 };
 //# get all Service
 const getServices = async (): Promise<Service[] | null> => {
-  const services = await prisma.service.findMany({});
+  const services = await prisma.service.findMany({
+    include: {
+      bookings: true,
+    },
+  });
 
   return services;
 };
@@ -62,6 +66,9 @@ const getServices = async (): Promise<Service[] | null> => {
 const getService = async (id: string): Promise<Service | null> => {
   const service = await prisma.service.findUnique({
     where: { id },
+    include: {
+      bookings: true,
+    },
   });
 
   return service;
